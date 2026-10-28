@@ -1,0 +1,365 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Taller evaluativo 2 · Unidad II</title>
+<style>
+:root{
+  --navy:#0B2545; --gold:#E8A317; --teal:#0F8B8D; --teal-dark:#0A5F61; --teal-light:#D5EEEE;
+  --red:#C0392B; --red-light:#F6DAD6; --slate:#4A5A85; --slate-light:#DDE1EC; --ok:#2E8B57; --ink:#1F2937; --gray:#6B7280; --mist:#EEF2F7; --line:#D1D9E6; --bg:#F7F9FC; --card:#FFFFFF;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:Calibri,Carlito,"Segoe UI",Arial,sans-serif;font-size:16px;line-height:1.45}
+header{background:var(--navy);color:#fff;padding:28px 16px 32px}
+.wrap{max-width:980px;margin:0 auto;padding:0 16px}
+header .wrap{padding:0}
+.kicker{color:var(--gold);font-weight:700;letter-spacing:.12em;font-size:13px;text-transform:uppercase}
+h1{font-family:Cambria,Caladea,Georgia,serif;font-size:32px;margin:6px 0 8px;line-height:1.15}
+header p{margin:0;color:#D1D9E6;max-width:720px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+.chip{background:rgba(255,255,255,.1);border-radius:999px;padding:4px 12px;font-size:14px}
+section.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:20px;margin:20px 0}
+h2{font-family:Cambria,Caladea,Georgia,serif;color:var(--navy);font-size:24px;margin:0 0 4px}
+.lead{color:var(--gray);margin:0 0 16px}
+.ctx{background:#FFF6E0;border-radius:10px;padding:14px 16px;margin:0 0 4px}
+.ctx b{color:var(--navy)}
+.ref{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:8px;margin-top:12px}
+.ref div{border-radius:8px;padding:8px 10px;font-size:14px}
+.ref .p{background:var(--red-light)} .ref .p b{color:var(--red)}
+.ref .t{background:var(--slate-light)} .ref .t b{color:var(--slate)}
+table.acc{width:100%;border-collapse:collapse}
+table.acc th{background:var(--navy);color:#fff;text-align:left;font-size:14px;padding:10px;font-weight:700}
+table.acc td{padding:10px;border-bottom:1px solid var(--line);vertical-align:top}
+table.acc tr:nth-child(even) td{background:#FAFBFD}
+.name{font-weight:700;color:var(--navy)}
+.desc{color:var(--gray);font-size:14px}
+.val{white-space:nowrap;text-align:right;font-variant-numeric:tabular-nums}
+select,input[type=text]{font:inherit;font-size:15px;padding:7px 8px;border:1.5px solid var(--line);border-radius:8px;background:#fff;color:var(--ink);width:100%}
+select:focus,input:focus{outline:2px solid var(--teal);outline-offset:1px;border-color:var(--teal)}
+.good{border-color:var(--ok)!important;background:#EAF6EF!important}
+.bad{border-color:var(--red)!important;background:#FBE9E7!important}
+.hint{display:none;font-size:13px;color:var(--red);margin-top:4px}
+.hint.show{display:block}
+/* Estado vertical */
+.stmt{max-width:640px;margin:0 auto;border:1px solid var(--line);border-radius:10px;padding:18px 20px}
+.stmt .hd{text-align:center;font-weight:700;color:var(--navy);margin-bottom:14px;line-height:1.35}
+.stmt .hd span{display:block;font-weight:400;color:var(--gray);font-size:14px}
+.ln{display:grid;grid-template-columns:1fr 210px;gap:12px;align-items:center;padding:5px 0}
+.ln .v{text-align:right;font-variant-numeric:tabular-nums}
+.ln.h{font-weight:700;margin-top:8px}
+.ln.sub{padding-left:16px}
+.ln.tot{font-weight:700;border-radius:6px;padding:7px 8px;margin-top:4px}
+.c-a{color:var(--teal)} .c-p{color:var(--red)} .c-t{color:var(--slate)}
+.bg-a{background:var(--teal-light)} .bg-p{background:var(--red-light)} .bg-t{background:var(--slate-light)} .bg-n{background:var(--navy);color:#fff}
+.ln input{text-align:right}
+.ln .hint{grid-column:1/-1}
+.q{border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin:12px 0}
+.q.good{background:#EAF6EF} .q.bad{background:#FBE9E7}
+.q p{margin:0 0 10px;font-weight:700;color:var(--navy)}
+.q label{display:flex;gap:10px;align-items:flex-start;padding:6px 4px;cursor:pointer;border-radius:6px}
+.q label:hover{background:rgba(15,139,141,.06)}
+.q input{margin-top:4px;accent-color:var(--teal)}
+.btn{font:inherit;font-weight:700;font-size:17px;border:0;border-radius:10px;padding:13px 22px;cursor:pointer}
+.btn-main{background:var(--teal);color:#fff}
+.btn-main:hover{background:var(--teal-dark)}
+.btn-gold{background:var(--gold);color:var(--navy)}
+.actions{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+#msg{color:var(--red);font-weight:700}
+#result,#evidence{display:none}
+.score{display:flex;flex-wrap:wrap;gap:16px;align-items:center}
+.big{font-family:Cambria,Caladea,Georgia,serif;font-size:56px;font-weight:700;color:var(--teal);line-height:1}
+.parts{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:16px}
+.part{background:var(--mist);border-radius:10px;padding:12px}
+.part b{display:block;font-size:22px;color:var(--navy)}
+.note{font-size:14px;color:var(--gray)}
+footer{color:var(--gray);font-size:13px;text-align:center;padding:24px 16px 40px}
+@media (max-width:720px){
+  h1{font-size:26px}
+  table.acc thead{display:none}
+  table.acc, table.acc tbody, table.acc tr, table.acc td{display:block;width:100%}
+  table.acc tr{border:1px solid var(--line);border-radius:10px;margin-bottom:12px;padding:6px}
+  table.acc td{border:0;padding:6px 8px}
+  table.acc td.val{text-align:left}
+  table.acc td[data-l]::before{content:attr(data-l);display:block;font-size:12px;color:var(--gray);font-weight:700;text-transform:uppercase;letter-spacing:.05em}
+  .parts{grid-template-columns:1fr}
+  .stmt{padding:14px 10px}
+  .ln{grid-template-columns:1fr 150px}
+}
+</style>
+<style>
+.ref .g{background:#E3F2EA} .ref .g b{color:#2E8B57}
+.ref .a{background:#FCEFD2} .ref .a b{color:#B7800F}
+.ref .ac{background:var(--teal-light)} .ref .ac b{color:var(--teal-dark)}
+.bg-g{background:#E3F2EA}
+.parts{grid-template-columns:repeat(4,1fr)}
+.rules{background:#FBE9E7;border:1px solid #F0C4BD;border-radius:10px;padding:14px 18px;margin-top:14px}
+.rules b{color:var(--red)}
+.rules ul{margin:6px 0 0;padding-left:20px}
+.locked select,.locked input,.locked label{pointer-events:none;opacity:.75}
+.banner{background:var(--navy);color:#fff;border-radius:10px;padding:14px 18px;margin:20px 0;display:none}
+.banner b{color:var(--gold)}
+.w{font-size:13px;color:var(--gray);font-weight:400}
+@media (max-width:720px){.parts{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <div class="kicker">Contabilidad de Empresas · Unidad II · Taller evaluativo 2 · 33,33 %</div>
+    <h1>Taller evaluativo 2 · TecnoMant Ingeniería S.A.S.</h1>
+    <p>Balance General, Estado de Resultados y análisis financiero de una misma empresa. Trabajo individual.</p>
+    <div class="chips"><span class="chip">Entrega: miércoles 4 de noviembre, 11:59 p. m.</span><span class="chip">4 partes</span><span class="chip">Nota sobre 5,0</span><span class="chip">Un solo envío</span></div>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="banner" id="banner"></div>
+
+  <section class="card">
+    <h2>Instrucciones</h2>
+    <ol style="margin:0;padding-left:20px">
+      <li>Lee cada cuenta y su descripción con calma. Te recomendamos resolver primero todo en Excel o en papel, y luego pasar tus respuestas aquí.</li>
+      <li>Escribe los valores en pesos, sin signo $ (puedes usar puntos de miles). Si un valor es negativo, escríbelo con signo menos: -250.000.</li>
+      <li>Al final escribe tu nombre completo y presiona <b>Enviar taller</b>. Luego descarga el comprobante PNG y súbelo a la tarea en Classroom.</li>
+    </ol>
+    <div class="rules">
+      <b>Importante: este taller tiene un solo envío.</b>
+      <ul>
+        <li>No hay pistas ni retroalimentación por pregunta: solo verás tu nota final al enviar.</li>
+        <li>Una vez enviado, las respuestas quedan bloqueadas y el envío queda registrado en este navegador.</li>
+        <li>Solo se tendrá en cuenta el primer comprobante entregado en Classroom.</li>
+      </ul>
+    </div>
+    <div class="ref" style="margin-top:14px" aria-label="Códigos">
+      <div class="ac"><b>AC</b> Activo corriente</div><div class="ac"><b>ANC</b> Activo no corriente</div><div class="p"><b>PC</b> Pasivo corriente</div><div class="p"><b>PNC</b> Pasivo no corriente</div><div class="t"><b>PT</b> Patrimonio</div>
+      <div class="g"><b>IO</b> Ingreso operacional</div><div class="a"><b>CO</b> Costo operacional</div><div class="t"><b>GO</b> Gasto operacional</div><div class="g"><b>OI</b> Otro ingreso</div><div class="p"><b>OG</b> Otro gasto</div>
+    </div>
+  </section>
+
+  <div id="form">
+  <section class="card">
+    <div class="ctx">TecnoMant Ingeniería S.A.S. hace mantenimiento preventivo y correctivo de equipos industriales en el Eje Cafetero. Estas son sus cuentas: las de <b>Balance</b> tienen saldos <b>al 31 de octubre de 2026</b> y las de <b>resultados</b> acumulan de <b>enero a octubre de 2026</b>.</div>
+    <h2>Parte 1 · Clasifica las cuentas <span class="w">(30 % de la nota)</span></h2>
+    <p class="lead">Elige el código de cada una de las 30 cuentas.</p>
+    <table class="acc"><thead><tr><th>Cuenta</th><th style="text-align:right">Saldo</th><th style="width:240px">Clasificación</th></tr></thead><tbody id="rows"></tbody></table>
+  </section>
+
+  <section class="card">
+    <h2>Parte 2 · Estado de Resultados <span class="w">(25 % de la nota)</span></h2>
+    <div class="stmt">
+      <div class="hd">TECNOMANT INGENIERÍA S.A.S.<br>Estado de Resultados<span>Del 1 de enero al 31 de octubre de 2026 · Cifras en pesos colombianos</span></div>
+      <div id="er"></div>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>Parte 3 · Balance General <span class="w">(25 % de la nota)</span></h2>
+    <div class="stmt">
+      <div class="hd">TECNOMANT INGENIERÍA S.A.S.<br>Estado de Situación Financiera<span>Al 31 de octubre de 2026 · Cifras en pesos colombianos</span></div>
+      <div id="bg"></div>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>Parte 4 · Análisis <span class="w">(20 % de la nota)</span></h2>
+    <p class="lead">Calcula los indicadores y responde las preguntas.</p>
+    <div class="stmt" id="ind"></div>
+    <div id="qs" style="margin-top:12px"></div>
+  </section>
+
+  <section class="card">
+    <h2>Envío</h2>
+    <p class="lead">Revisa todas tus respuestas antes de enviar. Después no podrás modificarlas.</p>
+    <div class="actions">
+      <input type="text" id="student" placeholder="Nombre y apellidos" style="max-width:380px" autocomplete="name">
+      <button class="btn btn-main" id="send">Enviar taller</button>
+      <span id="msg"></span>
+    </div>
+  </section>
+  </div>
+
+  <section class="card" id="result">
+    <h2>Taller enviado</h2>
+    <div class="score"><div class="big" id="nota">0,0</div><div><div id="who" style="font-weight:700;color:var(--navy)"></div><div class="note" id="when"></div></div></div>
+    <div class="parts">
+      <div class="part">Parte 1 · Clasificación<b id="s0"></b></div>
+      <div class="part">Parte 2 · Estado de Resultados<b id="s1"></b></div>
+      <div class="part">Parte 3 · Balance General<b id="s2"></b></div>
+      <div class="part">Parte 4 · Análisis<b id="s3"></b></div>
+    </div>
+    <div class="actions" style="margin-top:16px"><button class="btn btn-gold" id="dl">Descargar comprobante PNG</button><span class="note" id="dlmsg"></span></div>
+    <p class="note" style="margin-top:10px">Sube el comprobante a la tarea del Taller evaluativo 2 en Classroom antes del miércoles 4 de noviembre a las 11:59 p. m.</p>
+  </section>
+</main>
+<footer>Universidad Tecnológica de Pereira · Ingeniería Industrial · Contabilidad de Empresas (II243)</footer>
+
+<script>
+(function(){
+  var KEY="II243_UII_Taller2_TecnoMant";
+  var CL=[["AC","AC · Activo corriente"],["ANC","ANC · Activo no corriente"],["PC","PC · Pasivo corriente"],["PNC","PNC · Pasivo no corriente"],["PT","PT · Patrimonio"],["IO","IO · Ingreso operacional"],["CO","CO · Costo operacional"],["GO","GO · Gasto operacional"],["OI","OI · Otro ingreso"],["OG","OG · Otro gasto"]];
+  var A=[
+    ["Ingresos por mantenimiento industrial","Servicios prestados de enero a octubre",96000000,"IO"],
+    ["Caja","Efectivo en la oficina",1500000,"AC"],
+    ["Salarios de los técnicos","Personal que repara los equipos en las plantas de los clientes",38000000,"CO"],
+    ["Préstamo bancario: saldo a más de 12 meses","Crédito del vehículo; última cuota en 2029",22000000,"PNC"],
+    ["Arriendo de la oficina","Sede administrativa, enero a octubre",9600000,"GO"],
+    ["Repuestos en bodega","Repuestos comprados que aún no se han usado",6500000,"AC"],
+    ["Capital suscrito y pagado","Aportes de los socios",50000000,"PT"],
+    ["Repuestos usados en los mantenimientos","Instalados en los equipos de los clientes durante el año",17500000,"CO"],
+    ["Clientes","Facturas por cobrar a 30 y 60 días",18700000,"AC"],
+    ["Intereses de un CDT","Rendimientos financieros del año",600000,"OI"],
+    ["Vehículo de servicio","Camioneta que lleva a los técnicos a las plantas",52000000,"ANC"],
+    ["IVA por pagar","Bimestre septiembre–octubre; se paga en noviembre",3200000,"PC"],
+    ["Salarios administrativos","Gerente y auxiliar contable",16000000,"GO"],
+    ["Anticipos recibidos de clientes","Pagos por mantenimientos que se harán en noviembre",2000000,"PC"],
+    ["Ingresos por asesoría técnica","Diagnósticos y recomendaciones a clientes industriales",14000000,"IO"],
+    ["Bancos","Saldo en cuenta corriente",12300000,"AC"],
+    ["Intereses del préstamo bancario","Costo financiero del crédito del vehículo",2800000,"OG"],
+    ["Herramientas y equipos de diagnóstico","Se usan durante varios años",23000000,"ANC"],
+    ["Publicidad en redes y ferias","Campañas para conseguir clientes",2400000,"GO"],
+    ["Proveedores","Repuestos comprados a crédito, pago a 45 días",9800000,"PC"],
+    ["Transporte a las plantas de los clientes","Peajes y combustible para llegar a cada servicio",4500000,"CO"],
+    ["Reserva legal","10 % de utilidades de años anteriores",3000000,"PT"],
+    ["Préstamo bancario: cuotas de los próximos 12 meses","Parte del crédito que vence antes de octubre de 2027",8400000,"PC"],
+    ["Comisiones de ventas","Pagadas al asesor comercial por contratos cerrados",3000000,"GO"],
+    ["CDT a 120 días","Vence en febrero de 2027",5000000,"AC"],
+    ["Salarios por pagar","Nómina de octubre; se paga el 5 de noviembre",4600000,"PC"],
+    ["Multa por incumplimiento","Penalización por entregar tarde un servicio",800000,"OG"],
+    ["Equipo de computación","Computadores de la oficina y software de diagnóstico",6000000,"ANC"],
+    ["Utilidades acumuladas","De años anteriores, no repartidas",7000000,"PT"],
+    ["Servicios públicos de la oficina","Energía, agua e internet de la sede",1000000,"GO"]
+  ];
+  var ER=[["er_io","Ingresos operacionales","tot bg-g",110000000],["er_co","(−) Costos operacionales","sub",60000000],["er_ub","(=) UTILIDAD BRUTA","tot bg-t",50000000],["er_go","(−) Gastos operacionales","sub",32000000],["er_uo","(=) UTILIDAD OPERACIONAL","tot bg-t",18000000],["er_ot","(+/−) Otros ingresos y gastos (neto)","sub",-3000000],["er_ue","(=) UTILIDAD DEL EJERCICIO","tot bg-n",15000000]];
+  var BG=[["h","ACTIVO","c-a"],["bg_ac","Total activo corriente","sub",44000000],["bg_anc","Total activo no corriente","sub",81000000],["bg_ta","TOTAL ACTIVO","tot bg-a",125000000],
+          ["h","PASIVO","c-p"],["bg_pc","Total pasivo corriente","sub",28000000],["bg_pnc","Total pasivo no corriente","sub",22000000],["bg_tp","TOTAL PASIVO","tot bg-p",50000000],
+          ["h","PATRIMONIO","c-t"],["bg_ue","Utilidad del ejercicio","sub",15000000],["bg_pt","TOTAL PATRIMONIO","tot bg-t",75000000],["bg_tpp","TOTAL PASIVO + PATRIMONIO","tot bg-n",125000000]];
+  var IND=[["in_rc","Razón corriente (con dos decimales, ej.: 1,25)",1.57,0.011],["in_pa","Prueba ácida (con dos decimales)",1.34,0.011],["in_en","Endeudamiento (%, con un decimal, ej.: 35,0)",40.0,0.11],["in_mb","Margen bruto (%, con un decimal)",45.5,0.11],["in_mo","Margen operacional (%, con un decimal)",16.4,0.11]];
+  var QS=[
+    {p:"¿Por qué los anticipos recibidos de clientes van en el pasivo y no en los ingresos?", o:["Porque todavía no han entrado al banco","Porque el servicio aún no se ha prestado: la empresa le debe el mantenimiento al cliente","Porque son ingresos no operacionales","Porque son un aporte de los clientes al capital"], a:1},
+    {p:"¿Por qué «Repuestos en bodega» es activo y «Repuestos usados en los mantenimientos» es costo?", o:["Porque los de bodega son más baratos","Porque los de bodega aún no se consumen (son inventario) y los usados ya se consumieron al prestar el servicio","Porque los usados se pagaron de contado","Es un error: los dos deberían ser costo"], a:1},
+    {p:"Con una razón corriente de 1,57 y un endeudamiento de 40 %, ¿cuál es la mejor lectura de TecnoMant?", o:["Está en riesgo: no alcanza a pagar sus deudas del año","Puede cubrir sus deudas de corto plazo con margen y la mayor parte de su activo la financian los socios","Depende casi por completo de los bancos","Tiene patrimonio negativo"], a:1}
+  ];
+  var CODES={}; CL.forEach(function(c){CODES[c[0]]=c[1];});
+  var fmt=function(v){return "$"+v.toLocaleString("es-CO");};
+  document.getElementById("rows").innerHTML=A.map(function(a,i){return '<tr><td><div class="name">'+(i+1)+'. '+a[0]+'</div><div class="desc">'+a[1]+'</div></td><td class="val" data-l="Saldo">'+fmt(a[2])+'</td><td data-l="Clasificación"><select id="c'+i+'" aria-label="Clasificación de '+a[0]+'"><option value="">Elige…</option>'+CL.map(function(l){return '<option value="'+l[0]+'">'+l[1]+'</option>';}).join("")+'</select></td></tr>';}).join("");
+  function line(L){ if(L[0]==="h") return '<div class="ln h '+L[2]+'"><div>'+L[1]+'</div><div></div></div>';
+    return '<div class="ln '+L[2]+'"><label for="'+L[0]+'">'+L[1]+'</label><input type="text" id="'+L[0]+'"></div>'; }
+  document.getElementById("er").innerHTML=ER.map(line).join("");
+  document.getElementById("bg").innerHTML=BG.map(line).join("");
+  document.getElementById("ind").innerHTML=IND.map(function(L){return '<div class="ln sub"><label for="'+L[0]+'">'+L[1]+'</label><input type="text" id="'+L[0]+'"></div>';}).join("");
+  document.getElementById("qs").innerHTML=QS.map(function(q,i){return '<div class="q" id="q'+i+'"><p>'+(i+1)+'. '+q.p+'</p>'+q.o.map(function(o,j){return '<label><input type="radio" name="r'+i+'" value="'+j+'"><span>'+o+'</span></label>';}).join("")+'</div>';}).join("");
+
+  function num(s){ s=(s||"").trim(); var neg=/^[-−(]/.test(s); var t=s.replace(/[^0-9]/g,""); if(t==="") return null; var v=parseInt(t,10); return neg?-v:v; }
+  function dec(s){ s=(s||"").replace(/[\s%$]/g,"").replace("−","-"); if(s==="") return null;
+    if(s.indexOf(",")>=0){ s=s.replace(/\./g,"").replace(",","."); }
+    var v=parseFloat(s); return isNaN(v)?null:v; }
+  var MONEY_IDS=ER.concat(BG).filter(function(L){return L[0]!=="h";});
+
+  function collect(){
+    var r={cls:[],money:{},ind:{},q:[]};
+    A.forEach(function(a,i){ r.cls.push(document.getElementById("c"+i).value); });
+    MONEY_IDS.forEach(function(L){ r.money[L[0]]=num(document.getElementById(L[0]).value); });
+    IND.forEach(function(L){ r.ind[L[0]]=dec(document.getElementById(L[0]).value); });
+    QS.forEach(function(q,i){ var c=document.querySelector('input[name="r'+i+'"]:checked'); r.q.push(c?parseInt(c.value,10):null); });
+    return r;
+  }
+  function score(r){
+    var a=0,b=0,c=0,d=0;
+    A.forEach(function(x,i){ if(r.cls[i]===x[3]) a++; });
+    ER.forEach(function(L){ if(r.money[L[0]]===L[3]) b++; });
+    BG.forEach(function(L){ if(L[0]!=="h" && r.money[L[0]]===L[3]) c++; });
+    IND.forEach(function(L){ var v=r.ind[L[0]]; if(v!==null && Math.abs(v-L[2])<=L[3]) d++; });
+    QS.forEach(function(q,i){ if(r.q[i]===q.a) d++; });
+    var nota=5*(0.30*a/30+0.25*b/7+0.25*c/9+0.20*d/8);
+    return {a:a,b:b,c:c,d:d,nota:Math.round(nota*100)/100};
+  }
+  function load(){ try{ return JSON.parse(localStorage.getItem(KEY)||"null"); }catch(e){ return null; } }
+  function save(o){ try{ localStorage.setItem(KEY,JSON.stringify(o)); }catch(e){} }
+
+  function fill(r){
+    A.forEach(function(a,i){ document.getElementById("c"+i).value=r.cls[i]||""; });
+    MONEY_IDS.forEach(function(L){ var v=r.money[L[0]]; document.getElementById(L[0]).value=v===null?"":v.toLocaleString("es-CO"); });
+    IND.forEach(function(L){ var v=r.ind[L[0]]; document.getElementById(L[0]).value=v===null?"":String(v).replace(".",","); });
+    QS.forEach(function(q,i){ if(r.q[i]!==null){ var el=document.querySelector('input[name="r'+i+'"][value="'+r.q[i]+'"]'); if(el) el.checked=true; } });
+  }
+  function lock(){ var f=document.getElementById("form"); f.classList.add("locked");
+    f.querySelectorAll("select,input,button").forEach(function(e){ e.disabled=true; }); }
+  var current=null;
+  function show(rec){
+    current=rec; var s=rec.s;
+    document.getElementById("result").style.display="block";
+    document.getElementById("nota").textContent=s.nota.toFixed(2).replace(".",",");
+    document.getElementById("who").textContent=rec.name;
+    document.getElementById("when").textContent="Enviado el "+new Date(rec.t).toLocaleString("es-CO",{day:"2-digit",month:"long",year:"numeric",hour:"2-digit",minute:"2-digit"});
+    document.getElementById("s0").textContent=s.a+" / 30";
+    document.getElementById("s1").textContent=s.b+" / 7";
+    document.getElementById("s2").textContent=s.c+" / 9";
+    document.getElementById("s3").textContent=s.d+" / 8";
+  }
+
+  var prev=load();
+  if(prev){
+    fill(prev.r); document.getElementById("student").value=prev.name; lock(); show(prev);
+    var bn=document.getElementById("banner"); bn.style.display="block";
+    bn.innerHTML="<b>Este taller ya fue enviado desde este navegador.</b> Puedes volver a descargar tu comprobante, pero no modificar las respuestas.";
+  }
+
+  document.getElementById("send").addEventListener("click",function(){
+    var msg=document.getElementById("msg"); msg.textContent="";
+    var r=collect(), miss=0;
+    r.cls.forEach(function(v){ if(!v) miss++; });
+    Object.keys(r.money).forEach(function(k){ if(r.money[k]===null) miss++; });
+    Object.keys(r.ind).forEach(function(k){ if(r.ind[k]===null) miss++; });
+    r.q.forEach(function(v){ if(v===null) miss++; });
+    if(miss>0){ msg.textContent="Te faltan "+miss+" respuestas por completar."; return; }
+    var name=document.getElementById("student").value.trim();
+    if(name.length<5){ msg.textContent="Escribe tu nombre completo antes de enviar."; return; }
+    if(!window.confirm("¿Enviar el taller? Después no podrás modificar tus respuestas.")) return;
+    var rec={name:name,r:r,s:score(r),t:new Date().toISOString()};
+    save(rec); lock(); show(rec);
+    document.getElementById("result").scrollIntoView({behavior:"smooth",block:"start"});
+  });
+
+  function hash(str){var h=2166136261; for(var i=0;i<str.length;i++){h^=str.charCodeAt(i); h=Math.imul(h,16777619);} return ("00000000"+(h>>>0).toString(16)).slice(-8).toUpperCase();}
+  function rr(c,x0,y0,w,h,r){c.beginPath();c.moveTo(x0+r,y0);c.arcTo(x0+w,y0,x0+w,y0+h,r);c.arcTo(x0+w,y0+h,x0,y0+h,r);c.arcTo(x0,y0+h,x0,y0,r);c.arcTo(x0,y0,x0+w,y0,r);c.closePath();}
+  function money(v){return (v<0?"−$":"$")+Math.abs(v).toLocaleString("es-CO");}
+  document.getElementById("dl").addEventListener("click",function(){
+    if(!current) return;
+    var rec=current, s=rec.s, r=rec.r;
+    var W=1200,H=1440,cv=document.createElement("canvas"); cv.width=W; cv.height=H;
+    var x=cv.getContext("2d"), F='Calibri, Carlito, "Segoe UI", Arial, sans-serif', S='Cambria, Caladea, Georgia, serif';
+    x.fillStyle="#FFFFFF"; x.fillRect(0,0,W,H); x.fillStyle="#0B2545"; x.fillRect(0,0,W,190);
+    x.fillStyle="#E8A317"; x.font="700 22px "+F; x.fillText("CONTABILIDAD DE EMPRESAS · UNIDAD II · TALLER EVALUATIVO 2 (33,33 %)",60,62);
+    x.fillStyle="#FFFFFF"; x.font="700 42px "+S; x.fillText("TecnoMant Ingeniería S.A.S.",60,118);
+    x.fillStyle="#D1D9E6"; x.font="22px "+F; x.fillText("Comprobante de envío único",60,158);
+    var when=new Date(rec.t).toLocaleString("es-CO",{day:"2-digit",month:"long",year:"numeric",hour:"2-digit",minute:"2-digit"});
+    x.fillStyle="#1F2937"; x.font="700 30px "+F; x.fillText(rec.name,60,250);
+    x.fillStyle="#6B7280"; x.font="22px "+F; x.fillText("Enviado el "+when,60,285);
+    x.fillStyle="#EEF2F7"; rr(x,820,215,320,150,16); x.fill();
+    x.fillStyle="#0F8B8D"; x.font="700 76px "+S; x.textAlign="center"; x.fillText(s.nota.toFixed(2).replace(".",","),980,310);
+    x.fillStyle="#1F2937"; x.font="22px "+F; x.fillText("Nota sobre 5,0",980,345); x.textAlign="left";
+    [["Clasificación (30 %)",s.a+" / 30"],["Est. de Resultados (25 %)",s.b+" / 7"],["Balance General (25 %)",s.c+" / 9"],["Análisis (20 %)",s.d+" / 8"]].forEach(function(p,i){ var px=60+i*272; x.fillStyle="#EEF2F7"; rr(x,px,395,256,86,12); x.fill(); x.fillStyle="#6B7280"; x.font="19px "+F; x.fillText(p[0],px+18,428); x.fillStyle="#0B2545"; x.font="700 30px "+F; x.fillText(p[1],px+18,466); });
+    x.fillStyle="#0B2545"; x.font="700 24px "+F; x.fillText("Respuestas registradas · Parte 1",60,535);
+    var y=572; x.font="19px "+F;
+    r.cls.forEach(function(v,i){ var col=i%3, row=Math.floor(i/3); x.fillStyle="#1F2937"; x.fillText((i+1)+". "+v,60+col*360,y+row*30); });
+    y+=10*30+20;
+    x.fillStyle="#0B2545"; x.font="700 24px "+F; x.fillText("Partes 2 y 3",60,y); y+=34;
+    MONEY_IDS.forEach(function(L,j){ var px=60+(j%2)*560, py=y+Math.floor(j/2)*30; x.fillStyle="#1F2937"; x.font="18px "+F;
+      x.fillText(L[1].replace(/^\([^)]*\)\s*/,""),px,py); x.font="700 18px "+F; x.fillText(money(r.money[L[0]]),px+340,py); });
+    y+=Math.ceil(MONEY_IDS.length/2)*30+20;
+    x.fillStyle="#0B2545"; x.font="700 24px "+F; x.fillText("Parte 4",60,y); y+=34;
+    var lab=["Razón corriente","Prueba ácida","Endeudamiento %","Margen bruto %","Margen operacional %"];
+    IND.forEach(function(L,j){ var px=60+(j%2)*560, py=y+Math.floor(j/2)*30; x.fillStyle="#1F2937"; x.font="18px "+F; x.fillText(lab[j],px,py); x.font="700 18px "+F; x.fillText(String(r.ind[L[0]]).replace(".",","),px+340,py); });
+    y+=3*30; x.font="18px "+F; x.fillStyle="#1F2937"; x.fillText("Preguntas: "+r.q.map(function(v,i){return (i+1)+")"+"abcd"[v];}).join("   "),60,y);
+    var code=hash(rec.name+"|"+s.nota+"|"+rec.t+"|"+JSON.stringify(r));
+    x.fillStyle="#6B7280"; x.font="18px "+F; x.fillText("Código de verificación: "+code,60,H-40);
+    x.textAlign="right"; x.fillText("UTP · Ingeniería Industrial · II243",W-60,H-40);
+    var a=document.createElement("a"); a.download="Taller2_UnidadII_"+rec.name.replace(/[^A-Za-zÁÉÍÓÚáéíóúÑñ ]/g,"").trim().replace(/\s+/g,"_")+".png";
+    a.href=cv.toDataURL("image/png"); document.body.appendChild(a); a.click(); a.remove();
+    document.getElementById("dlmsg").textContent="Comprobante descargado (código "+code+").";
+  });
+})();
+</script>
+</body>
+</html>
